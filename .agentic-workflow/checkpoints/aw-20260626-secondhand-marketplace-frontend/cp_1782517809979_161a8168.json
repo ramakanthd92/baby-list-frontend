@@ -1,0 +1,40 @@
+{
+  "id": "cp_1782517809979_161a8168",
+  "sessionId": "aw-20260626-secondhand-marketplace-frontend",
+  "reason": "session_created",
+  "timestamp": "2026-06-26T23:50:10.006Z",
+  "state": {
+    "_version": "6.0.0",
+    "_savedAt": "2026-06-26T23:50:10.006Z",
+    "session": {
+      "id": "aw-20260626-secondhand-marketplace-frontend",
+      "name": "Second-Hand Marketplace Frontend",
+      "createdAt": "2026-06-26T23:50:09.919Z",
+      "updatedAt": "2026-06-26T23:50:09.919Z",
+      "status": "active"
+    },
+    "currentStage": "prd",
+    "completedStages": [],
+    "artifacts": [],
+    "gates": [],
+    "context": {
+      "projectName": "CraiglistScraper",
+      "projectPath": "/Users/r0p0aib/CraiglistScraper",
+      "workflowBranch": "aw/secondhand-marketplace-frontend",
+      "techStack": [
+        "React",
+        "TypeScript",
+        "TailwindCSS"
+      ],
+      "workflowCategory": "feature",
+      "changeType": "frontend",
+      "primaryLanguage": "typescript"
+    },
+    "metadata": {
+      "totalDuration": 0,
+      "stageTimings": {},
+      "stageStartTimes": {},
+      "retryCount": 0
+    }
+  }
+}

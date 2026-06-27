@@ -1,0 +1,105 @@
+{
+  "session": "aw-20260626-secondhand-marketplace-frontend",
+  "changeType": "NEW_FEATURE",
+  "totalTasks": 12,
+  "totalEstimatedHours": 31,
+  "targetPath": "/Users/r0p0aib/baby-items/frontend/",
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "Project Scaffold",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 2,
+      "dependencies": [],
+      "files": ["frontend/package.json", "frontend/vite.config.ts", "frontend/tailwind.config.ts", "frontend/src/main.tsx", "frontend/.env.example"]
+    },
+    {
+      "id": "TASK-002",
+      "title": "API Client + Types",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 3,
+      "dependencies": ["TASK-001"],
+      "files": ["frontend/src/lib/api.ts", "frontend/src/types/index.ts"]
+    },
+    {
+      "id": "TASK-003",
+      "title": "Core UI Components",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 2,
+      "dependencies": ["TASK-001"],
+      "files": ["frontend/src/components/SourceBadge.tsx", "frontend/src/components/ConditionBadge.tsx", "frontend/src/components/PriceTag.tsx", "frontend/src/components/RelativeTime.tsx", "frontend/src/components/ListingImageThumbnail.tsx"]
+    },
+    {
+      "id": "TASK-004",
+      "title": "ListingCard Component",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 2,
+      "dependencies": ["TASK-003"],
+      "files": ["frontend/src/components/ListingCard.tsx"]
+    },
+    {
+      "id": "TASK-005",
+      "title": "Navigation",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 2,
+      "dependencies": ["TASK-001"],
+      "files": ["frontend/src/components/Navbar.tsx", "frontend/src/components/MobileMenu.tsx"]
+    },
+    {
+      "id": "TASK-006",
+      "title": "HomePage",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 3,
+      "dependencies": ["TASK-002", "TASK-003", "TASK-004", "TASK-005"],
+      "files": ["frontend/src/pages/HomePage.tsx", "frontend/src/hooks/useListings.ts", "frontend/src/hooks/useCategories.ts"]
+    },
+    {
+      "id": "TASK-007",
+      "title": "SearchPage + Filter System",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 4,
+      "dependencies": ["TASK-002", "TASK-004"],
+      "files": ["frontend/src/pages/SearchPage.tsx", "frontend/src/components/FilterSidebar.tsx", "frontend/src/components/FilterChips.tsx"]
+    },
+    {
+      "id": "TASK-008",
+      "title": "CategoryPage",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 2,
+      "dependencies": ["TASK-007"],
+      "files": ["frontend/src/pages/CategoryPage.tsx"]
+    },
+    {
+      "id": "TASK-009",
+      "title": "ListingDetailPage",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 4,
+      "dependencies": ["TASK-002", "TASK-003", "TASK-010", "TASK-011"],
+      "files": ["frontend/src/pages/ListingDetailPage.tsx"]
+    },
+    {
+      "id": "TASK-010",
+      "title": "Leaflet Map Component",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 2,
+      "dependencies": ["TASK-001"],
+      "files": ["frontend/src/components/ListingMap.tsx"]
+    },
+    {
+      "id": "TASK-011",
+      "title": "Image Gallery Component",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 2,
+      "dependencies": ["TASK-001"],
+      "files": ["frontend/src/components/ImageGallery.tsx"]
+    },
+    {
+      "id": "TASK-012",
+      "title": "404 Page + Error Boundaries",
+      "changeType": "NEW_PATTERN",
+      "estimateHours": 1,
+      "dependencies": ["TASK-001"],
+      "files": ["frontend/src/pages/NotFoundPage.tsx", "frontend/src/components/ErrorBoundary.tsx"]
+    }
+  ]
+}

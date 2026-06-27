@@ -1,0 +1,89 @@
+{
+  "id": "cp_1782517925819_3f56a61b",
+  "sessionId": "aw-20260626-secondhand-marketplace-frontend",
+  "reason": "gate_approved",
+  "timestamp": "2026-06-26T23:52:05.819Z",
+  "state": {
+    "_version": "6.0.0",
+    "_savedAt": "2026-06-26T23:52:05.819Z",
+    "session": {
+      "id": "aw-20260626-secondhand-marketplace-frontend",
+      "name": "Second-Hand Marketplace Frontend",
+      "createdAt": "2026-06-26T23:50:09.919Z",
+      "updatedAt": "2026-06-26T23:51:57.907Z",
+      "status": "active"
+    },
+    "currentStage": "prd",
+    "completedStages": [
+      "prd"
+    ],
+    "artifacts": [
+      [
+        "art_prd_1782517917880_2ce08621",
+        {
+          "stage": "prd",
+          "name": "requirements-summary",
+          "type": "document",
+          "content": "# Requirements Summary — Second-Hand Marketplace Frontend\n\n**Session:** aw-20260626-secondhand-marketplace-frontend  \n**Date:** 2026-06-26  \n**Project:** CraiglistScraper / baby-items  \n\n---\n\n## 1. Project Context\n\nThe backend is a fully operational FastAPI service (`/Users/r0p0aib/baby-items`) that aggregates second-hand listings from 6+ scrapers (Craigslist, eBay, Etsy, Facebook, Mercari, OfferUp). It exposes a **read-only REST API** with Redis caching, PostgreSQL storage, and full-text search via `search_vector`.\n\nThe frontend will be a **standalone React SPA** that consumes this API.\n\n---\n\n## 2. API Endpoints Available\n\n| Method | Path | Description |\n|--------|------|-------------|\n| GET | `/listings` | Paginated listing search with filters |\n| GET | `/listings/{id}` | Full listing detail |\n| GET | `/categories` | Category + subcategory tree |\n| GET | `/sources` | Available source platforms |\n| GET | `/health` | Health check |\n\n### Listing Schema (summary card)\n```\nid, source, source_url, title, description, price, currency,\ncondition, category, subcategory, images[], location_city,\nlocation_state, posted_at, scraped_at, is_active, dedup_cluster_id\n```\n\n### Listing Schema (detail page, adds)\n```\nseller_name, seller_rating, location_zip, location_lat, location_lon\n```\n\n### Query Filters (`GET /listings`)\n- `q` — full-text search (max 200 chars)\n- `category`, `subcategory`\n- `price_min`, `price_max`\n- `condition` — comma-separated (new, used, fair, good, etc.)\n- `source` — comma-separated (craigslist, ebay, facebook, etsy, offerup, mercari)\n- `location_zip` + `radius_miles` (1–500)\n- `posted_after` — date filter\n- `deduplicated` — boolean (default: true)\n- `page` + `page_size`\n\n---\n\n## 3. Functional Requirements\n\n### FR-01: Homepage\n- Hero section with search bar (prominent, centered)\n- Category grid: Baby Items, Cars, Phones, Bikes, Bags, Clothes, Electronics, Jewellery, Household, Workstation\n- Recent listings horizontal scroll (latest 20, no filter)\n- Featured/trending listings section\n- Source logos strip (Craigslist, eBay, Facebook, etc.)\n\n### FR-02: Search & Filtering\n- Full-text search via `q` parameter\n- Sidebar/drawer filters: Category, Subcategory, Price Range (slider + inputs), Condition (checkboxes), Source (checkboxes), Location ZIP + radius, Posted After (date picker)\n- Filter chips showing active filters, each removable\n- Sort: Newest, Price low→high, Price high→low\n- Pagination (page-based) with `page_size` selector (20/40/60)\n- Mobile: filters in a bottom sheet / modal drawer\n\n### FR-03: Listing Card (grid/list view)\n- Thumbnail image (fallback placeholder if images=[])\n- Title (truncated to 2 lines)\n- Price with currency symbol\n- Condition badge\n- Source badge (platform logo + name)\n- Location city + state\n- Time ago (relative, from `posted_at` or `scraped_at`)\n- \"Also listed on N sites\" indicator when `dedup_cluster_id` is set\n\n### FR-04: Listing Detail Page\n- Image gallery (carousel/lightbox, supports multiple images)\n- Full title + description (rendered with line breaks)\n- Price + currency\n- Condition badge + category breadcrumb\n- Source badge with external link (`source_url`)\n- Seller info: name, star rating (if available)\n- Location: city/state/zip + Leaflet.js map pin (lat/lon if available)\n- \"Also available on other platforms\" section when dedup_cluster_id matches\n- Posted date + scraped date\n- Back navigation\n\n### FR-05: Category Browse Page\n- Grid of subcategory cards within a category\n- Pre-filtered listing grid for that category\n- Category hero/banner image\n\n### FR-06: Navigation\n- Sticky top navbar: Logo, Search bar, Category dropdown\n- Breadcrumbs on detail page\n- Mobile: hamburger menu / bottom tab bar\n\n### FR-07: Deduplication Awareness\n- When `dedup_cluster_id` is non-null, show \"See N more listings for this item\"\n- On detail page, fetch other listings in same cluster and show as \"Also listed on...\"\n\n---\n\n## 4. Non-Functional Requirements\n\n| NFR | Requirement |\n|-----|-------------|\n| Performance | LCP < 2.5s; paginated API responses cached |\n| Responsive | Mobile-first; breakpoints: 375px, 768px, 1024px, 1280px |\n| Accessibility | WCAG 2.1 AA — keyboard nav, ARIA labels, contrast ratios |\n| SEO | SSR or pre-rendered HTML for listing pages (or meta tags minimum) |\n| Images | Lazy load; `loading=\"lazy\"`; fallback placeholder |\n| No auth | Read-only public frontend; no user accounts in MVP |\n| API base URL | Configurable via `VITE_API_BASE_URL` env variable |\n\n---\n\n## 5. Tech Stack Decision\n\n| Layer | Choice | Rationale |\n|-------|--------|-----------|\n| Framework | React 18 + TypeScript | Type safety, ecosystem |\n| Build | Vite | Fast dev server, ESM |\n| Styling | Tailwind CSS v3 | Utility-first, responsive |\n| UI Components | shadcn/ui (Radix UI) | Accessible, unstyled primitives |\n| State / Data | TanStack Query v5 | Server state, caching, pagination |\n| Routing | React Router v6 | SPA routing |\n| Maps | Leaflet.js + react-leaflet | Lightweight OSM maps |\n| Icons | Lucide React | Clean, consistent |\n| HTTP | Fetch API (via TanStack Query) | Native, no extra dep |\n\n---\n\n## 6. Pages / Routes\n\n| Route | Component | Description |\n|-------|-----------|-------------|\n| `/` | `HomePage` | Hero + categories + recent listings |\n| `/search` | `SearchPage` | Full search + filters |\n| `/category/:slug` | `CategoryPage` | Category browse + filtered listings |\n| `/listing/:id` | `ListingDetailPage` | Full listing detail |\n| `*` | `NotFoundPage` | 404 |\n\n---\n\n## 7. Categories & Subcategory Map\n\n| Category Slug | Display Name | Sample Subcategories |\n|--------------|--------------|----------------------|\n| `baby-items` | Baby Items | strollers, car_seats, clothing, toys, safety_gates |\n| `cars` | Used Cars | sedan, suv, truck, van |\n| `phones` | Phones & Tablets | iphone, android, tablets |\n| `bikes` | Bikes | road, mountain, electric, bmx |\n| `bags` | Bags & Luggage | backpacks, handbags, luggage |\n| `clothes` | Clothing | men, women, kids |\n| `electronics` | Electronics | laptops, cameras, audio |\n| `jewellery` | Jewellery | rings, necklaces, watches |\n| `household` | Household Items | furniture, kitchen, decor |\n| `workstation` | Workstation | monitors, keyboards, chairs |\n\n---\n\n## 8. Source Platforms\n\n| Source Key | Display Name |\n|-----------|--------------|\n| `craigslist` | Craigslist |\n| `ebay` | eBay |\n| `facebook` | Facebook Marketplace |\n| `etsy` | Etsy |\n| `offerup` | OfferUp |\n| `mercari` | Mercari |\n\n---\n\n## 9. Acceptance Criteria\n\n- [ ] Homepage renders category grid + recent listings from live API\n- [ ] Search with at least 3 simultaneous filters returns correct results\n- [ ] Listing detail page renders map when lat/lon is present\n- [ ] Dedup indicator shows on cards and detail pages when applicable\n- [ ] All pages render correctly on 375px mobile viewport\n- [ ] No console errors on page load\n- [ ] `VITE_API_BASE_URL` controls API target\n- [ ] External source link opens in new tab with `rel=\"noopener noreferrer\"`\n- [ ] Images fail gracefully to placeholder\n\n---\n\n## 10. Out of Scope (MVP)\n\n- User accounts / authentication\n- Favorites / saved searches\n- Chat / messaging with sellers\n- Payment processing\n- Admin dashboard\n- PWA / offline mode\n- i18n / multi-language\n",
+          "filePath": "/Users/r0p0aib/CraiglistScraper/.agentic-workflow/artifacts/aw-20260626-secondhand-marketplace-frontend/01-requirements/requirements-summary.md",
+          "id": "art_prd_1782517917880_2ce08621",
+          "metadata": {
+            "createdAt": "2026-06-26T23:51:57.880Z",
+            "updatedAt": "2026-06-26T23:51:57.880Z",
+            "version": 1,
+            "hash": "e902baab612dbfab"
+          }
+        }
+      ]
+    ],
+    "gates": [
+      [
+        "prd",
+        {
+          "stage": "prd",
+          "status": "approved",
+          "timestamp": "2026-06-26T23:52:05.819Z",
+          "presentedAt": "2026-06-26T23:51:57.993Z",
+          "reviewDurationMs": 7826
+        }
+      ]
+    ],
+    "context": {
+      "projectName": "CraiglistScraper",
+      "projectPath": "/Users/r0p0aib/CraiglistScraper",
+      "workflowBranch": "aw/secondhand-marketplace-frontend",
+      "techStack": [
+        "React",
+        "TypeScript",
+        "TailwindCSS"
+      ],
+      "selectedStages": [
+        "requirements",
+        "design",
+        "security",
+        "test-planning",
+        "implementation",
+        "code-review",
+        "integration-testing",
+        "performance",
+        "review-fixes",
+        "documentation",
+        "observability",
+        "deployment"
+      ],
+      "workflowCategory": "feature",
+      "changeType": "frontend",
+      "primaryLanguage": "typescript"
+    },
+    "metadata": {
+      "totalDuration": 107822,
+      "stageTimings": {
+        "prd": 107822
+      },
+      "stageStartTimes": {
+        "prd": 1782517810058
+      },
+      "retryCount": 0
+    }
+  }
+}
