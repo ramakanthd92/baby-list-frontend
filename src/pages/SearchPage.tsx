@@ -128,12 +128,12 @@ export function SearchPage({ lockedCategory }: { lockedCategory?: string }) {
           {/* Mobile filter toggle */}
           <button
             onClick={() => setMobileFiltersOpen(v => !v)}
-            className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 lg:hidden"
+            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors lg:hidden shadow-sm"
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filters
             {chips.length > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-xs text-white font-bold">
                 {chips.length}
               </span>
             )}
@@ -141,8 +141,9 @@ export function SearchPage({ lockedCategory }: { lockedCategory?: string }) {
 
           {/* Result count */}
           {meta && (
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold">{meta.total.toLocaleString()}</span> listing{meta.total !== 1 ? 's' : ''}
+            <p className="text-sm text-gray-500">
+              <span className="font-bold text-gray-900">{meta.total.toLocaleString()}</span>{' '}
+              listing{meta.total !== 1 ? 's' : ''}
             </p>
           )}
 
@@ -150,7 +151,7 @@ export function SearchPage({ lockedCategory }: { lockedCategory?: string }) {
           <select
             value={sort}
             onChange={e => setParam('sort', e.target.value)}
-            className="ml-auto rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+            className="ml-auto rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-medium focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition"
           >
             <option value="newest">Newest first</option>
             <option value="price_asc">Price: Low to High</option>
@@ -161,7 +162,7 @@ export function SearchPage({ lockedCategory }: { lockedCategory?: string }) {
           <select
             value={pageSize}
             onChange={e => setParam('page_size', e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+            className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-medium focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition"
           >
             {PAGE_SIZES.map(s => (
               <option key={s} value={s}>{s} per page</option>
@@ -207,28 +208,38 @@ export function SearchPage({ lockedCategory }: { lockedCategory?: string }) {
 
         {/* Results */}
         {isError ? (
-          <div className="flex flex-col items-center gap-3 py-16 text-center">
-            <p className="text-gray-600">Failed to load listings. Check your API connection.</p>
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-red-100 bg-red-50 py-16 text-center px-6">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-100">
+              <span className="text-2xl">⚠️</span>
+            </div>
+            <div>
+              <p className="font-semibold text-red-800">Failed to load listings</p>
+              <p className="mt-1 text-sm text-red-600">Check your API connection and try again.</p>
+            </div>
             <button
               onClick={() => window.location.reload()}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+              className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors"
             >
               Retry
             </button>
           </div>
         ) : isLoading ? (
           <div className={cn('grid gap-4', 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-4')}>
-            {Array.from({ length: pageSize }).map((_, i) => <ListingCardSkeleton key={i} />)}
+            {Array.from({ length: Math.min(pageSize, 12) }).map((_, i) => <ListingCardSkeleton key={i} />)}
           </div>
         ) : !data?.items.length ? (
-          <div className="flex flex-col items-center gap-3 py-16 text-center">
-            <p className="text-2xl">🔍</p>
-            <p className="font-semibold text-gray-800">No listings found</p>
-            <p className="text-sm text-gray-500">Try different keywords or adjust your filters.</p>
+          <div className="flex flex-col items-center gap-4 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 py-16 text-center px-6">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
+              <span className="text-2xl">🔍</span>
+            </div>
+            <div>
+              <p className="font-semibold text-gray-800 text-lg">No listings found</p>
+              <p className="mt-1 text-sm text-gray-500">Try different keywords or broaden your filters.</p>
+            </div>
             {chips.length > 0 && (
               <button
                 onClick={clearAll}
-                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors shadow-sm"
               >
                 Clear all filters
               </button>
@@ -244,21 +255,21 @@ export function SearchPage({ lockedCategory }: { lockedCategory?: string }) {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 pt-4">
+          <div className="flex items-center justify-center gap-3 pt-6">
             <button
               disabled={page <= 1}
               onClick={() => setParam('page', String(page - 1))}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:opacity-40 hover:bg-gray-50"
+              className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-40 hover:bg-gray-50 transition-colors shadow-sm"
             >
               ← Prev
             </button>
-            <span className="text-sm text-gray-600">
-              Page {page} of {totalPages}
+            <span className="rounded-xl bg-indigo-50 px-4 py-2.5 text-sm font-semibold text-indigo-700">
+              {page} / {totalPages}
             </span>
             <button
               disabled={page >= totalPages}
               onClick={() => setParam('page', String(page + 1))}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm disabled:opacity-40 hover:bg-gray-50"
+              className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 disabled:opacity-40 hover:bg-gray-50 transition-colors shadow-sm"
             >
               Next →
             </button>

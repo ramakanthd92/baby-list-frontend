@@ -38,54 +38,82 @@ export function Navbar() {
     }
   }
 
+  const isHome = location.pathname === '/'
+
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <header className={cn(
+        'sticky top-0 z-40 w-full border-b transition-colors',
+        isHome
+          ? 'border-white/20 bg-indigo-700/95 backdrop-blur-md'
+          : 'border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85 shadow-sm'
+      )}>
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
-              <ShoppingBag className="h-4 w-4" />
+            <div className={cn(
+              'flex h-9 w-9 items-center justify-center rounded-xl shadow-sm',
+              isHome ? 'bg-white/20 text-white' : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white'
+            )}>
+              <ShoppingBag className="h-4.5 w-4.5" />
             </div>
-            <span className="hidden font-bold text-gray-900 sm:block text-lg">Remarket</span>
+            <span className={cn(
+              'hidden font-extrabold sm:block text-lg tracking-tight',
+              isHome ? 'text-white' : 'text-gray-900'
+            )}>
+              Remarket
+            </span>
           </Link>
 
-          {/* Search bar */}
-          <form onSubmit={handleSearch} className="flex flex-1 items-center">
-            <div className="relative w-full max-w-2xl">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                type="search"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                placeholder="Search listings…"
-                className="h-10 w-full rounded-full border border-gray-200 bg-gray-50 pl-9 pr-4 text-sm outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-              />
-            </div>
-          </form>
+          {/* Search bar — hidden on home (hero has its own) */}
+          {!isHome && (
+            <form onSubmit={handleSearch} className="flex flex-1 items-center">
+              <div className="relative w-full max-w-2xl">
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  placeholder="Search listings…"
+                  className="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                />
+              </div>
+            </form>
+          )}
+
+          {/* Spacer on home */}
+          {isHome && <div className="flex-1" />}
 
           {/* Category dropdown (desktop) */}
           <div className="relative hidden sm:block" ref={dropdownRef}>
             <button
               onClick={() => setCatOpen(v => !v)}
-              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+              className={cn(
+                'flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors',
+                isHome
+                  ? 'text-white/90 hover:bg-white/15'
+                  : 'text-gray-700 hover:bg-gray-100'
+              )}
             >
               Categories
-              <ChevronDown className={cn('h-4 w-4 transition-transform', catOpen && 'rotate-180')} />
+              <ChevronDown className={cn('h-4 w-4 transition-transform duration-200', catOpen && 'rotate-180')} />
             </button>
 
             {catOpen && (
-              <div className="absolute right-0 top-full mt-1 w-64 rounded-xl border border-gray-200 bg-white p-2 shadow-lg">
+              <div className="absolute right-0 top-full mt-2 w-72 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl">
+                <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                  All Categories
+                </p>
                 <div className="grid grid-cols-2 gap-1">
-                  {categories.map(cat => (
+                  {categories.filter(c => c.slug !== 'uncategorized').map(cat => (
                     <Link
                       key={cat.slug}
                       to={`/category/${cat.slug}`}
                       onClick={() => setCatOpen(false)}
-                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+                      className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
                     >
-                      <span>{categoryEmoji(cat.slug)}</span>
-                      <span className="truncate">{cat.label}</span>
+                      <span className="text-base">{categoryEmoji(cat.slug)}</span>
+                      <span className="truncate font-medium">{cat.label}</span>
                     </Link>
                   ))}
                 </div>
@@ -95,7 +123,10 @@ export function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="sm:hidden rounded-lg p-2 text-gray-700 hover:bg-gray-100"
+            className={cn(
+              'sm:hidden rounded-xl p-2 transition-colors',
+              isHome ? 'text-white hover:bg-white/15' : 'text-gray-700 hover:bg-gray-100'
+            )}
             onClick={() => setMobileOpen(v => !v)}
             aria-label="Toggle menu"
           >
@@ -106,19 +137,33 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="fixed inset-x-0 top-16 z-30 border-b border-gray-200 bg-white px-4 pb-4 shadow-lg sm:hidden">
-          <p className="pb-2 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <div className="fixed inset-x-0 top-16 z-30 border-b border-gray-200 bg-white px-4 pb-5 shadow-xl sm:hidden">
+          {!isHome && (
+            <form onSubmit={handleSearch} className="pt-3 pb-2">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  placeholder="Search listings…"
+                  className="h-10 w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                />
+              </div>
+            </form>
+          )}
+          <p className="pb-2 pt-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
             Categories
           </p>
           <div className="grid grid-cols-2 gap-1">
-            {categories.map(cat => (
+            {categories.filter(c => c.slug !== 'uncategorized').map(cat => (
               <Link
                 key={cat.slug}
                 to={`/category/${cat.slug}`}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
               >
-                <span>{categoryEmoji(cat.slug)}</span>
-                <span>{cat.label}</span>
+                <span className="text-base">{categoryEmoji(cat.slug)}</span>
+                <span className="font-medium">{cat.label}</span>
               </Link>
             ))}
           </div>

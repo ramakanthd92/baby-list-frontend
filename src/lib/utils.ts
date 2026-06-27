@@ -72,6 +72,31 @@ export function categoryEmoji(slug: string): string {
   return CATEGORY_EMOJI[slug] ?? '📦'
 }
 
+// Category gradient colors for cards
+export const CATEGORY_GRADIENT: Record<string, string> = {
+  safety:     'from-blue-500 to-indigo-600',
+  mobility:   'from-purple-500 to-pink-600',
+  feeding:    'from-orange-400 to-red-500',
+  sleeping:   'from-sky-500 to-blue-600',
+  clothing:   'from-pink-500 to-rose-600',
+  toys:       'from-yellow-400 to-orange-500',
+  bath_care:  'from-teal-400 to-emerald-500',
+  nursery:    'from-green-500 to-teal-600',
+  electronics:'from-violet-500 to-purple-700',
+  bikes:      'from-lime-500 to-green-600',
+  cars:       'from-gray-600 to-slate-700',
+  phones:     'from-blue-400 to-cyan-500',
+  bags:       'from-amber-500 to-yellow-600',
+  household:  'from-emerald-500 to-teal-600',
+  workstation:'from-indigo-500 to-violet-600',
+  jewellery:  'from-yellow-500 to-amber-600',
+  uncategorized: 'from-gray-400 to-gray-600',
+}
+
+export function categoryGradient(slug: string): string {
+  return CATEGORY_GRADIENT[slug] ?? 'from-indigo-500 to-purple-600'
+}
+
 // Source display map
 export const SOURCE_META: Record<string, { label: string; emoji: string; color: string }> = {
   craigslist: { label: 'Craigslist', emoji: '📋', color: 'bg-purple-100 text-purple-800' },
