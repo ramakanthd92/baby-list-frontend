@@ -7,7 +7,6 @@ import { SourceBadge } from '@/components/SourceBadge'
 import { ConditionBadge } from '@/components/ConditionBadge'
 import { PriceTag } from '@/components/PriceTag'
 import { RelativeTime } from '@/components/RelativeTime'
-import { ListingCard, ListingCardSkeleton } from '@/components/ListingCard'
 import { categoryEmoji, slugToLabel } from '@/lib/utils'
 
 export function ListingDetailPage() {
