@@ -11,7 +11,11 @@ import { ApiError } from '@/types'
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? ''
 
 async function request<T>(path: string, params?: Record<string, string>): Promise<T> {
-  const url = new URL(`${BASE_URL}${path}`)
+  // new URL() requires an absolute URL — use window.location.origin as base when
+  // VITE_API_BASE_URL is empty (nginx same-origin proxy mode)
+  const url = BASE_URL
+    ? new URL(`${BASE_URL}${path}`)
+    : new URL(path, window.location.origin)
   if (params) {
     Object.entries(params).forEach(([k, v]) => {
       if (v !== undefined && v !== null && v !== '') {
