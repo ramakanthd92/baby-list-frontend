@@ -31,8 +31,10 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Remove default nginx pid location which requires root
-RUN mkdir -p /var/cache/nginx /var/run && \
-    chown -R nginx:nginx /var/cache/nginx /var/run /usr/share/nginx/html && \
+RUN mkdir -p /var/cache/nginx /var/run /run && \
+    chown -R nginx:nginx /var/cache/nginx /var/run /run /usr/share/nginx/html && \
+    # Redirect pid file to a path nginx user owns
+    sed -i 's|pid\s*/run/nginx.pid;|pid /tmp/nginx.pid;|g' /etc/nginx/nginx.conf && \
     # Allow nginx to bind to port 8080 as non-root
     sed -i 's/listen\s*80;/listen 8080;/g' /etc/nginx/nginx.conf || true
 
